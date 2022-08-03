@@ -28,13 +28,14 @@ SET (target "BMS")
 PROJECT (${target} CXX)
 
 # define source files
-FILE (GLOB src *.h *.cpp)
+FILE (GLOB src *.cpp)
 
 # add current directory to the cmake_module_path for reading the "findiconv.cmake"
 # LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
 
 #required packages
-FIND_PACKAGE (OpenCV 2.4.0 REQUIRED)
+# FIND_PACKAGE (OpenCV 2.4.0 REQUIRED)
+FIND_PACKAGE (OpenCV REQUIRED)
 
 INCLUDE_DIRECTORIES (${OPENCV_INCLUDE_DIR})
 
@@ -47,8 +48,3 @@ SET_TARGET_PROPERTIES(
 	PROPERTIES 
 	LINKER_LANGUAGE CXX)
 
-# strange that without this, the project file generated won't compile source files
-SET_SOURCE_FILES_PROPERTIES (
-	${src} 
-	PROPERTIES 
-	LANGUAGE CXX)

@@ -5,6 +5,8 @@
 #include <string>
 #include <cstdio>
 
+#include <iostream>
+
 #include "OS_specific.h"
 using namespace std;
 
