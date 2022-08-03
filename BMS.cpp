@@ -86,7 +86,7 @@ void BMS::computeSaliency(float step)
             bm = _feature_maps[i] <= thresh;
             // save each inverted feature map
             img_name = _out_path + rmExtension(_file_name) + "-" + 
-                channel + "-" + thresh_str + ".png";
+                channel + "-neg-" + thresh_str + ".png";
             imwrite(img_name, bm);
             registerPosition(bm, img_name);
         }
