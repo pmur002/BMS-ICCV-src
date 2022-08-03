@@ -33,20 +33,24 @@ using namespace cv;
 class BMS
 {
 public:
-	BMS (const Mat& src, const int dw1, const int ow, const bool nm, const bool hb);
-	Mat getSaliencyMap();
-	void computeSaliency(float step);
+    BMS (const Mat& src, const int dw1, const int ow, 
+         const bool nm, const bool hb, 
+         const std::string out_path, const std::string file_name);
+    std::string _out_path;
+    std::string _file_name;
+    Mat getSaliencyMap();
+    void computeSaliency(float step);
 private:
-	Mat registerPosition(const Mat& bm);
-	Mat getAttentionMap(const Mat& bm);
-	Mat _sm;
-	Mat _src;
-        std::vector<Mat> _feature_maps;
-	RNG _rng;
-	int _dilation_width_1;
-	int _opening_width;
-	bool _handle_border;
-	bool _normalize;
+    Mat registerPosition(const Mat& bm, std::string img_name);
+    Mat getAttentionMap(const Mat& bm, std::string img_name);
+    Mat _sm;
+    Mat _src;
+    std::vector<Mat> _feature_maps;
+    RNG _rng;
+    int _dilation_width_1;
+    int _opening_width;
+    bool _handle_border;
+    bool _normalize;
 };
 
 

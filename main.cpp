@@ -89,7 +89,7 @@ void doWork(
 		ttt=clock();
 
 		BMS bms(src_small, dilation_width_1, opening_width,
-                        use_normalize, handle_border);
+                        use_normalize, handle_border, out_path, file_list[i]);
 		bms.computeSaliency((float)sample_step);
 		
 		Mat result=bms.getSaliencyMap();
