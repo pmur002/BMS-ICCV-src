@@ -66,10 +66,12 @@ void doWork(
 		string ext=getExtension(file_list[i]);
 		if (!(ext.compare("jpg")==0 || ext.compare("jpeg")==0 || ext.compare("JPG")==0 || ext.compare("tif")==0 || ext.compare("png")==0 || ext.compare("bmp")==0))
 			continue;
-		cout<<file_list[i]<<"..."<<endl;
+		// cout<<file_list[i]<<"..."<<endl;
 
 		/* Preprocessing */
 		Mat src=imread(in_path+file_list[i]);
+                // save image as PNG
+                imwrite(out_path + rmExtension(file_list[i]) + ".png", src);
 		Mat src_small;
                 // standard: width: 600 pixel
 		resize(src, src_small, 

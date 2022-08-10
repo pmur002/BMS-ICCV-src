@@ -38,11 +38,14 @@ public:
          const std::string out_path, const std::string file_name);
     std::string _out_path;
     std::string _file_name;
+    std::ofstream _logL, _loga, _logb;
     Mat getSaliencyMap();
     void computeSaliency(float step);
 private:
-    Mat registerPosition(const Mat& bm, std::string img_name);
-    Mat getAttentionMap(const Mat& bm, std::string img_name);
+    Mat registerPosition(const Mat& bm, std::string img_name, 
+                         std::string channel);
+    Mat getAttentionMap(const Mat& bm, std::string img_name,
+                        std::string channel);
     Mat _sm;
     Mat _src;
     std::vector<Mat> _feature_maps;

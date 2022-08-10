@@ -57,6 +57,11 @@ BMS::BMS(const Mat& src, const int dw1, const int ow, const bool nm, const bool 
 		imwrite(out_path + rmExtension(file_name) + "-L.png", sp[0]);
 		imwrite(out_path + rmExtension(file_name) + "-a.png", sp[1]);
 		imwrite(out_path + rmExtension(file_name) + "-b.png", sp[2]);
+
+                // log the attention map maxima
+                _logL.open(out_path + rmExtension(file_name) + "-L.log");
+                _loga.open(out_path + rmExtension(file_name) + "-a.log");
+                _logb.open(out_path + rmExtension(file_name) + "-b.log");
 	}
 	_sm=Mat::zeros(src.size(),CV_64FC1);
 }
@@ -81,19 +86,19 @@ void BMS::computeSaliency(float step)
             img_name = _out_path + rmExtension(_file_name) + "-" + 
                 channel + "-" + thresh_str + ".png";
             imwrite(img_name, bm);
-            registerPosition(bm, img_name);
+            registerPosition(bm, img_name, channel);
 
             bm = _feature_maps[i] <= thresh;
             // save each inverted feature map
             img_name = _out_path + rmExtension(_file_name) + "-" + 
                 channel + "-neg-" + thresh_str + ".png";
             imwrite(img_name, bm);
-            registerPosition(bm, img_name);
+            registerPosition(bm, img_name, channel);
         }
     }
 }
 
-Mat BMS::registerPosition(const Mat& bm, string img_name)
+Mat BMS::registerPosition(const Mat& bm, string img_name, string channel)
 {
     Mat bm_ = bm.clone();
     if (_opening_width > 0) {
@@ -105,14 +110,14 @@ Mat BMS::registerPosition(const Mat& bm, string img_name)
     string name = rmExtension(img_name) + "-open.png";
     imwrite(name, bm_);
 
-    Mat innovation = getAttentionMap(bm_, img_name);
+    Mat innovation = getAttentionMap(bm_, img_name, channel);
 
     _sm=_sm+innovation;
     return innovation;
 }
 
 
-Mat BMS::getAttentionMap(const Mat& bm, string img_name)
+Mat BMS::getAttentionMap(const Mat& bm, string img_name, string channel)
 {
     string name;
 
@@ -178,9 +183,22 @@ Mat BMS::getAttentionMap(const Mat& bm, string img_name)
         normalize(ret, ret, 1.0, 0.0, NORM_MINMAX);
 
     // save normalised attention map
+    Mat norm = ret.clone();
+    // Artificially enhance so values are recorded in 8-bit output
+    normalize(norm,norm,255.0,0.0,NORM_MINMAX);
+    norm.convertTo(norm, CV_8UC1);
     name = rmExtension(img_name) + "-attention-normal.png";
-    imwrite(name, ret);
-
+    imwrite(name, norm);
+    // Save actual maximum so can rescale 
+    double min, max;
+    minMaxIdx(ret, &min, &max, NULL, NULL);
+    if (channel == "L") {
+        _logL << name << "," << max << endl;
+    } else if (channel == "a") {
+        _loga << name << "," << max << endl;
+    } else {
+        _logb << name << "," << max << endl;
+    }
     return ret;
 }
 
